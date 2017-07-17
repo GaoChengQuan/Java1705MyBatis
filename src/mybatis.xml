@@ -4,21 +4,38 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+	<!-- 可以加载外部配置文件，在src下直接写文件名 -->
+	<properties resource="db.properties"/>
+	
+	<!-- 定义别名 -->
+	<typeAliases>
+		<!-- 单个别名定义 -->
+		<typeAlias alias="Student" type="com.situ.mybatis.entity.Student"/>
+		<!-- <typeAlias alias="Clazz" type="com.situ.mybatis.entity.Clazz"/> -->
+		<!-- 扫描整个包里面的类，批量起别名，别名即为类名，别名是不区分大小写 -->
+		<package name="com.situ.mybatis.entity"/>
+		<!-- <package name="其他包"/> -->
+	</typeAliases>
+
+	
 	<environments default="development">
 		<environment id="development">
 			<!-- 使用jdbc事物管理 -->
 			<transactionManager type="JDBC" />
 			<!-- 数据库连接池 -->
 			<dataSource type="POOLED">
-				<property name="driver" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://localhost:3306/student_manager?characterEncoding=utf-8" />
-				<property name="username" value="root" />
-				<property name="password" value="123" />
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
 			</dataSource>
 		</environment>
 	</environments>
 	
 	<mappers>
-		<mapper resource="com/situ/mybatis/entity/StudentMapper.xml" />
+		<!-- <mapper resource="com/situ/mybatis/entity/StudentMapper.xml" />
+		<mapper resource="com/situ/mybatis/entity/ClazzMapper.xml" /> -->
+		<!-- 要求Mapper的接口名和Mapper映射文件名相同，而且在一个包下面 -->
+		<package name="com.situ.mybatis.mapper"/>
 	</mappers>
 </configuration>

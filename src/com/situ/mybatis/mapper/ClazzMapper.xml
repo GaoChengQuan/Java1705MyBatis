@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clazz">
+	<!-- 通过id查询学生 -->
+	<select id="findById" parameterType="Integer" resultType="Clazz" >
+		select * from class where id = #{id}
+	</select>
+	
+	<!-- resultType理论上是写List<Clazz>，但是只要写List里面的类型就可以了 -->
+	<select id="findAll" resultType="Clazz">
+		select * from class
+	</select>
+	
+	<!-- 根据姓名模糊查找 -->
+	<select id="findByName" parameterType="String" resultType="Clazz">
+		select * from class where name like '%${value}%'
+	</select>
+	
+	<!-- 增加 -->
+	<insert id="insert" parameterType="Clazz">
+		insert into class(name) 
+		values(#{name})
+	</insert>
+	
+	<!-- 根据id删除 -->
+	<delete id="deleteById" parameterType="Integer">
+		delete from class where id=#{id}
+	</delete>
+	
+	<delete id="delete" parameterType="Clazz">
+		delete from class where id=#{id}
+	</delete>
+	
+	<!-- 跟新 -->
+	<update id="update" parameterType="Clazz">
+		update class 
+		set name=#{name}
+		where id=#{id}
+	</update>
+</mapper>
