@@ -3,19 +3,135 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.situ.mybatis.mapper.StudentMapper">
+	<sql id="studentColums">
+		name,age,gender,birthday
+	</sql>
+
 	<!-- 通过id查询学生 -->
 	<select id="findById" parameterType="Integer" resultType="Student" >
-		select * from student where id = #{id}
+		select <include refid="studentColums"/>  from student where id = #{id}
 	</select>
 	
+	<resultMap type="Student" id="studentInfoMap">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="age" column="age"/>
+		<result property="gender" column="gender"/>
+		<result property="birthday" column="birthday"/>
+		
+		<association property="clazz" javaType="Clazz">
+			<id property="id" column="classId"/>
+			<result property="name" column="className"/>
+		</association>
+	</resultMap>
+	
+	<!-- 通过id查询学生 -->
+	<select id="findInfoById" parameterType="Integer" resultMap="studentInfoMap" >
+		select s.id,s.name,s.age,s.gender,s.birthday,c.id as classId,c.name as className
+		from student as s inner join class as c
+		on s.class_id = c.id
+		where s.id=#{id};
+	</select>
+
+	<!-- resultMap最终还是要将结果映射到pojo上，type就是指定映射到哪一个pojo 
+		当实体属性与表字段名不相同的时候，必须写一下代码， 
+		当实体属性与表字段名相同的时候，一下代码可选 -->
+	<resultMap type="Student" id="studentMap">
+		<!-- 映射主键属性。如果是多个字段,则定义多个id -->
+    	<!-- property：主键在pojo中的属性名 -->
+    	<!-- column：主键在数据库中的列名 -->
+		<id property="id" column="sid"/>
+		<!-- result定义普通属性 -->
+		<result property="name" column="sname"/>
+		<!-- 可以省略匹配的 -->
+		<result property="age" column="age"/>
+		<result property="gender" column="gender"/>
+		<result property="birthday" column="birthday"/>
+	</resultMap>
+	
 	<!-- resultType理论上是写List<Student>，但是只要写List里面的类型就可以了 -->
-	<select id="findAll" resultType="Student">
-		select * from student
+	<select id="findAll" resultMap="studentMap">
+		select sname,age,gender,birthday from student
+	</select>
+	
+	<!-- 查询一共有多少学生 -->
+	<select id="findCount" resultType="Integer">
+		select count(*) from student
 	</select>
 	
 	<!-- 根据姓名模糊查找 -->
 	<select id="findByName" parameterType="String" resultType="Student">
 		select * from student where name like '%${value}%'
+	</select>
+	
+	<!-- 根据SearchVO条件查询 -->
+	<!-- <select id="findBySearchVO" parameterType="SearchVO" resultType="Student">
+		select * from student where name like '%${student.name}%'
+	</select> -->
+	
+	<!-- 动态拼接sql -->
+	<select id="findByCondition" parameterType="Student" resultType="Student">
+		select * from student 
+		<!-- where标签可以自动添加where，同时处理sql语句中第一个and关键字 -->
+		<where>
+			<if test="name!=null">
+				and name like '%${name}%'
+			</if>
+			<if test="gender!=null">
+				and gender = #{gender}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 根据多个id查询学生信息 -->
+	<select id="findByIdArray" resultType="Student">
+		<!-- select * from student where id in (1,2,3,4) -->
+		select * from student
+		<where>
+			id in
+			<!-- 下面的foreach就是为了拼接出：(1,2,3,4) 
+				foreach用于迭代数组元素
+            	open表示开始符号
+            	close表示结束符号
+            	separator表示元素间的分隔符
+            	item表示迭代的元素
+				-->
+			<foreach collection="array" item="id" separator="," open="(" close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<!-- 根据多个id查询学生信息 -->
+	<select id="findByIdList" resultType="Student">
+		<!-- select * from student where id in (1,2,3,4) -->
+		select * from student
+		<where>
+			id in
+			<!-- 下面的foreach就是为了拼接出：(1,2,3,4) -->
+			<foreach collection="list" item="id" separator="," open="(" close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<!-- 根据SearchVO中多个id查询学生信息 -->
+	<select id="findBySearchVO" parameterType="SearchVO" resultType="Student">
+		<!-- select * from student where id in (1,2,3,4) -->
+		select * from student
+		<where>
+			id in
+			<!-- 下面的foreach就是为了拼接出：(1,2,3,4) -->
+			<foreach collection="idList" item="id" separator="," open="(" close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	
+	<!-- //将分页信息放在map里面 -->
+	<select id="findByPage" parameterType="Map" resultType="Student">
+		select * from student limit #{pageIndex},#{pageSize}
 	</select>
 	
 	<!-- 增加 -->
@@ -37,6 +153,30 @@
 	<update id="update" parameterType="Student">
 		update student 
 		set name=#{name},age=#{age},password=#{password},gender=#{gender},birthday=#{birthday} 
+		where id=#{id}
+	</update>
+	
+	<!-- 跟新根据动态sql -->
+	<update id="dynaUpdate" parameterType="Student">
+		update student
+		<!-- set标签会自动判断哪一个是最后一个字段，会自动去掉最后一个的“，”号 -->
+		<set>
+			<if test="name!=null">
+				name=#{name},
+			</if>
+			<if test="age!=null">
+				age=#{age},
+			</if>
+			<if test="gender!=null">
+				gender=#{gender},
+			</if>
+			<if test="password!=null">
+				password=#{password},
+			</if>
+			<if test="birthday!=null">
+				birthday=#{birthday},
+			</if>
+		</set>
 		where id=#{id}
 	</update>
 </mapper>

@@ -2,30 +2,20 @@ package com.situ.mybatis.entity;
 
 import java.util.Date;
 
-public class Student{
-	private int id;
+public class Student {
+	private Integer id;
 	private String name;
 	private String password;
-	private int age;
+	private Integer age;
 	private String gender;
 	private Date birthday;
+	private Clazz clazz;
 
 	public Student() {
 		super();
 	}
 
-	public Student(String name, String password, int age, String gender,
-			Date birthday) {
-		super();
-		this.name = name;
-		this.password = password;
-		this.age = age;
-		this.gender = gender;
-		this.birthday = birthday;
-	}
-	
-
-	public Student(int id, String name, String password, int age,
+	public Student(Integer id, String name, String password, Integer age,
 			String gender, Date birthday) {
 		super();
 		this.id = id;
@@ -36,6 +26,30 @@ public class Student{
 		this.birthday = birthday;
 	}
 
+	public Clazz getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(Clazz clazz) {
+		this.clazz = clazz;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -44,28 +58,11 @@ public class Student{
 		this.password = password;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		System.out.println("getName()");
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
@@ -81,15 +78,15 @@ public class Student{
 		return birthday;
 	}
 
-	public void setBirthday(Date date) {
-		this.birthday = date;
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 
 	@Override
 	public String toString() {
 		return "Student [id=" + id + ", name=" + name + ", password="
 				+ password + ", age=" + age + ", gender=" + gender
-				+ ", birthday=" + birthday + "]";
+				+ ", birthday=" + birthday + ", clazz=" + clazz + "]";
 	}
 
 }
