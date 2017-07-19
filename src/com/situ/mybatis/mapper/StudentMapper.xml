@@ -3,6 +3,30 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.situ.mybatis.mapper.StudentMapper">
+
+	<resultMap type="Student" id="studentInfoMap1">
+		<result property="name" column="studentName"/>
+		<association property="clazz" javaType="Clazz">
+		  <result property="name" column="className"/>
+		  <collection property="courseList" ofType="Course">
+		  	<result property="name" column="courseName"/>
+		  	<result property="credit" column="credit"/>
+		  </collection>
+		</association>
+	</resultMap>
+	<!-- 根据名字查询学生的相关信息 -->
+	<select id="findInfoByName" parameterType="String" resultMap="studentInfoMap1">
+		SELECT s.name as studentName,c.name as className,co.name as courseName,credit 
+		        FROM student AS s
+		        INNER JOIN class AS c ON s.class_id=c.id
+		        INNER JOIN class_course AS cc ON c.id=cc.class_id
+		        INNER JOIN course AS co ON cc.course_id=co.id 
+		        WHERE s.name like '%${value}%';
+	</select>
+
+
+
+
 	<sql id="studentColums">
 		name,age,gender,birthday
 	</sql>
@@ -22,6 +46,9 @@
 		<association property="clazz" javaType="Clazz">
 			<id property="id" column="classId"/>
 			<result property="name" column="className"/>
+			<collection property="">
+				
+			</collection>
 		</association>
 	</resultMap>
 	

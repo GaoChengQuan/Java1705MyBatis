@@ -111,4 +111,10 @@ public class StudenDaoImpl implements StudentMapper {
 		return null;
 	}
 
+	@Override
+	public List<Student> findInfoByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

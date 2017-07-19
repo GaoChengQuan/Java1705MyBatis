@@ -40,4 +40,7 @@ public interface StudentMapper {
 	public List<Student> findByIdList(List<Integer> idList);
 	public List<Student> findBySearchVO(SearchVO searchVO);
 	
+	//根据名字查询学生的相关信息
+	public List<Student> findInfoByName(String name);
+	
 }

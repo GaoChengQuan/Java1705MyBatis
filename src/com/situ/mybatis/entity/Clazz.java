@@ -5,6 +5,7 @@ import java.util.List;
 public class Clazz {
 	private Integer id;
 	private String name;
+	private List<Course> courseList;
 	private List<Student> list;
 
 	public Clazz() {
@@ -13,6 +14,15 @@ public class Clazz {
 	public Clazz(Integer id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	
+	public List<Course> getCourseList() {
+		return courseList;
+	}
+
+	public void setCourseList(List<Course> courseList) {
+		this.courseList = courseList;
 	}
 
 	public List<Student> getList() {
